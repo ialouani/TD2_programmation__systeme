@@ -1,0 +1,139 @@
+PROCESSUS ET GESTION DE LA MEMOIRE:
+
+1)ABSTRACTION POUR LE PROCESSUS ET LA MEMOIRE:
+Chaque processus a un espace d'adressage privé.
+=>garantir le cloisonnement entre processus(securite et protection)
+=>abstraction de la memoire(memoire virtuelle)
+=>cache le noyau et les autres processus.
+**
+Espace d’adressage:
+les adresses et cellules mémoires
+les états associés à ces cellules
+Rq: Chaque processus ne voit que son espace d’adressage
+**<=>adressage virtuelle. Le sommet est important d'ou l'inverse:
+Programm adress space:
+stack
+
+heap
+data
+text.(moyen mnemotechnique)
+adressage sur n bits=>2**n adresses possibles
+rappel: processus est un programme en cours et ses contextes memoires , descripteurs de fichiers, etc..
+
+2)GESTION DE LA MEMOIRE PAR L'OS:
+Le kernel en donne les instructions en memoire virtuelle et les fait tourner par l'OS. Donc c'est l'os qui fait le lien entre mémoire virtuelle et mémoire réèlle.
+Traduction(MMU/TLB) faite par le CPU.
+**MECANISME DE PAGES:
+--La mémoire est gérée par blocs de 2k cellules mémoires. (4ko ou 2Mo sur x86), des pages.
+--chaque page VIRTUELLE CORREPOND a une page réelle.
+**La traduction s'appuie sur un mapping des pages (traduction par dictionnaire)
+**L'adresse virtuelle est composée de différents champs permettant la construction de l'adresse réèlle.
+
+ALLOCATION MEMOIRE:
+=>un ensemble de pages physiques sont allouée à un processus tournant dans le cpu via ses dernieres communications.
+a-allocation paresseuse:
+	_L'allocation de la page est réellement faite que lorsqu'elle est réèllement accédee (execution parallele non sequentielle) ce qui permet une gestion plus economique de la memoire plutot qu'une allocation gloutonne.
+	_Politique de gestion de la mémoire:
+	? que faire si plus de pages physiques disponibles
+	<=>ROLE DU SWAP:
+		si plus de pages physiques, stockage sur le disque les pages de processus en attente.
+		
+		
+3)INTERFACE DE PROGRAMMATION POUR LA GESTION DE LA MEMOIRE:
+changer la taille du tas(heap) via:
+int brk(void* end_segment) retourne 0 si succes, -1 sinon: définit l'adresse virtuelle de la fin du tas.
+int sbrk(intptr_t displacement) retourne l'adresse de fin de heap.
+RQ IMPORTANTE:
+=>bcp d'os font de l'allocation paresseuse:
+	<=>comportement optimiste et retourne souvent non null.
+(c'est pour cela valgrind râle parfois ; c'est lié le besoin D'UNE ZONE MEMOIRE)
+L'OS peut etre amene a terminer certains processus pour liberer de la place afin de libérer les ressources : pages virtuelles(dont le nombre et celui des pages réèlles..///)
+AFFICHAGE DES DIFFERENTES ZONES MEMOIRE: voire le fichier correspondant..///
+
+
+
+4)GESTION DE PROCESSUS PAR L'OS:
+CE QUI FAUT RETENIR ET APPRENDRE:
+En informatique, un bloc de contrôle de processus ou PCB (de l'anglais process control block) est une structure de données du noyau d'un système d'exploitation représentant l'état d'un processus donné.
+
+Diverses implémentations existent selon les systèmes d'exploitation, mais un PCB contient en général :
+
+    L'ID du processus (PID), l'ID du processus parent (PPID) et l'ID de l'utilisateur du processus (UID) ;
+    Les valeurs des registres correspondant au processus (l'état courant du processus, selon qu'il est élu, prêt ou bloqué) ;
+    Le compteur ordinal du processus ;
+    Le pointeur de pile : indique la position du prochain emplacement disponible dans la pile mémoire ;
+    L'espace d'adressage du processus ;
+    La liste des descripteurs de fichiers ;
+    La liste de gestion des signaux ;
+    D'autres informations telles que le temps CPU accumulé par le processus, etc.
+
+Lors d'un changement de contexte, le processus en cours est arrêté et un autre processus peut utiliser le CPU. Le noyau doit arrêter l'exécution du processus en cours, copier les valeurs des registres hardware dans le PCB, et mettre à jour les registres avec les valeurs du nouveau processus.
+
+RAPPEL(on le verra apres):
+signaux: quels comportements sont prévus.(??)
+
+COMMENT LE PROCESSEUR PASSE D'UN PROCESSUS A UN AUTRE:
+__Cela s’appelle un context
+switch.
+__Le temps du context switch doit
+ˆetre réduit au minimum (cf
+commande time)
+__L’OS définit une politique
+d’ordonnancement (scheduling)
+=>Ordonnacement des processus comme une file d'attente un peu demelee et bizarre structurellement(un groupe de ceci):
+=>=>Mécanismes classiques pour le scheduling:
+****Mécanisme de préemption:
+	Un processus est interrompu au bout d’un quota de temps (10ms par ex.)
+Certains OS (temps réel) ne sont pas préemptifs, les processus doivent
+laisser la main à l’OS volontairement.
+	Algorithme d’ordonnancement:
+	Utilise des priorités
+	Tourniquet (round robin): tous les processus ont droit à un quota de temps
+à tour de rôle
+
+<=>~Gestion de processus/Changement de contexte.
+ETAT D'UN PROCESSUS:(important pour la comprehension des divers sous links)::
+
+1-Pret: est en attente du processeur, dépend de l’ordonnancement
+2-En exécution: occupe le processeur
+3-Suspendu: en attente d’une entrée sortie
+4-Stoppé, tracée: en attente d’un signal, en position d’attente (pour
+synchronisation avec d’autres processus par ex.)
+5-Zombie puis arrêté: attend que le processus parent recoive le signal de
+terminaison du fils puis termine (PCB détruit)
+Rq: la commande pstree fournit la filiation entre processus.
+
+2 POINTS IMPORTANTS AVANT DE PASSER A LA DERNIERE PARTIE:
+1) creation : on peut en créer avec clonage via fork().(deja fait et analyse)
+2) pret : pret a etre execute, en attente du processeur.
+
+
+
+
+
+
+
+5)INTERFACE DE PROGRAMMATION DES PROCESSUS:
+création: fork() et clone() seulement possibles sous linux! ca limite bien des choses..
+=>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
